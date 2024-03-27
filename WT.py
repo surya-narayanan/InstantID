@@ -44,8 +44,10 @@ for original in pathlib.Path('/home/user/InstantID/Originals').iterdir():
 
     orignal_filename = str(original).split('/')[-1].split('.')[0]
     extension = str(original).split('/')[-1].split('.')[1]
-    if extension != 'JPG':
-        continue
+    
+    # if extension != 'JPG':
+    #     continue
+    
     face_image = load_image(str(original))
     
     face_image.show()
