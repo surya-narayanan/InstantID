@@ -45,61 +45,73 @@ for original in pathlib.Path('/home/user/InstantID/Originals').iterdir():
     orignal_filename = str(original).split('/')[-1].split('.')[0]
     extension = str(original).split('/')[-1].split('.')[1]
     
+    if orignal_filename in ['8', '11', '19', '23', '31', '32', '44', '53', '59', '62', '64', '67', '68', '26', '24', '7']:
+        continue
     # if extension != 'JPG':
     #     continue
-    
-    face_image = load_image(str(original))
-    
-    face_image.show()
-    
-    # prepare face emb
-    face_info = app.get(cv2.cvtColor(np.array(face_image), cv2.COLOR_RGB2BGR))
-    face_info = sorted(face_info, key=lambda x:(x['bbox'][2]-x['bbox'][0])*x['bbox'][3]-x['bbox'][1])[-1] # only use the maximum face
-    face_emb = face_info['embedding']
-    face_kps = draw_kps(face_image, face_info['kps'])
-
-    pipe.set_ip_adapter_scale(0.8)
-
-    prompts = [
-        'Photo of a woman skiing in Switzerland.',
-        'Photo of a woman paragliding in Austria',
-        'Photo of a woman trekking in Luxembourg',
-        'Photo of a woman in Spain going in hot air balloon',
-        'Photo of a woman rowing in Thames London',
-        'Photo of a woman in a ship in Belgium',
-        'Photo of a woman in a mass in Italy',
-        'Photo of a woman in tulips garden at Netherlands',
-        'Photo of a woman in the statue of liberty in New York'
-        ]
-
-    negative_prompt = "(lowres, low quality, worst quality:1.2), (text:1.2), watermark, (frame:1.2), deformed, ugly, deformed eyes, blur, out of focus, blurry, deformed cat, deformed, photo, anthropomorphic cat, monochrome, pet collar, gun, weapon, blue, 3d, drones, drone, buildings in background, green, anime, cartoon, graphic, (blur, blurry, bokeh), text, painting, crayon, graphite, abstract, glitch, deformed, mutated, ugly, disfigured"
-
-    for prompt in prompts:
-        print(prompt)
-
-        path = pathlib.Path(f'/home/user/InstantID/Generated/{prompt}/{orignal_filename}')
-        path.mkdir(parents=True, exist_ok=True)
-        random.seed(9001)
+    try:
+        face_image = load_image(str(original))
         
-        prompt += ' cinematic still a photo of a woman. emotional, harmonious, vignette, 4k epic detailed, shot on kodak, 35mm photo, sharp focus, high budget, cinemascope, moody, epic, gorgeous, film grain, grainy'
+        face_image.show()
         
-        for asd in range(num_images_per_prompt):    
+        # prepare face emb
+        face_info = app.get(cv2.cvtColor(np.array(face_image), cv2.COLOR_RGB2BGR))
+        face_info = sorted(face_info, key=lambda x:(x['bbox'][2]-x['bbox'][0])*x['bbox'][3]-x['bbox'][1])[-1] # only use the maximum face
+        face_emb = face_info['embedding']
+        face_kps = draw_kps(face_image, face_info['kps'])
 
-            random_int = random.randint(1, num_images_per_prompt)
+        pipe.set_ip_adapter_scale(0.8)
 
-            image = pipe(prompt=prompt, 
-                        image_embeds=face_emb, 
-                        image=face_kps, 
-                        controlnet_conditioning_scale=0.8,
-                        negative_prompt=negative_prompt,
-                        random_seed=random_int,
-                        ).images[0]
+        prompts = [
+            'Photo of a woman skiing in Switzerland.',
+            'Photo of a woman paragliding in Austria',
+            'Photo of a woman trekking in Luxembourg',
+            'Photo of a woman in Spain going in hot air balloon',
+            'Photo of a woman rowing in Thames London',
+            'Photo of a woman in a ship in Belgium',
+            'Photo of a woman in a mass in Italy',
+            'Photo of a woman in tulips garden at Netherlands',
+            'Photo of a woman in the statue of liberty in New York',
+            'Photo of a woman in a kimono during Cherry Blossom season in Japan',
+            'Photo of a woman on a motorbike in Vietnam',
+            'Photo of a woman as a Fighter Pilot in Russia',
+            'Photo of a woman in a desert in Dubai',
+            'Photo of a woman in a temple in India',
+            'Photo of a woman on a crater on Mars',
+            'Photo of a woman in a forest in Brazil',
+            'Photo of a woman on a Jeep in Africa',
+            'Photo of a woman in a jetski in Australia wearing a wetsuit',
+            ]
+
+        negative_prompt = "(lowres, low quality, worst quality:1.2), (text:1.2), watermark, (frame:1.2), deformed, ugly, deformed eyes, blur, out of focus, blurry, deformed cat, deformed, photo, anthropomorphic cat, monochrome, pet collar, gun, weapon, blue, 3d, drones, drone, buildings in background, green, anime, cartoon, graphic, (blur, blurry, bokeh), text, painting, crayon, graphite, abstract, glitch, deformed, mutated, ugly, disfigured"
+
+        for prompt in prompts:
+            print(prompt)
+
+            path = pathlib.Path(f'/home/user/InstantID/Generated/{prompt}/{orignal_filename}')
+            path.mkdir(parents=True, exist_ok=True)
+            random.seed(9001)
             
-            image.show()
+            prompt += ' cinematic still a photo of a woman. emotional, harmonious, vignette, 4k epic detailed, shot on kodak, 35mm photo, sharp focus, high budget, cinemascope, moody, epic, gorgeous, film grain, grainy'
+            
+            for asd in range(num_images_per_prompt):    
 
-            image.save(f'{path}/{random_int}.jpeg')
-                                                                    
+                random_int = random.randint(1, num_images_per_prompt)
+
+                image = pipe(prompt=prompt, 
+                            image_embeds=face_emb, 
+                            image=face_kps, 
+                            controlnet_conditioning_scale=0.8,
+                            negative_prompt=negative_prompt,
+                            random_seed=random_int,
+                            ).images[0]
+                
+                image.show()
+
+                image.save(f'{path}/{random_int}.jpeg')
+    except:
+        continue                                                                        
 
 
 
-# %%
+    # %%
