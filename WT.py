@@ -14,7 +14,7 @@ from pipeline_stable_diffusion_xl_instantid import StableDiffusionXLInstantIDPip
 
 import pathlib
 import random
-num_images_per_prompt = 100
+num_images_per_prompt = 1
 
 # prepare 'antelopev2' under ./models
 app = FaceAnalysis(name='antelopev2', root='./', providers=['CUDAExecutionProvider', 'CPUExecutionProvider'])
@@ -43,9 +43,12 @@ for original in pathlib.Path('/home/user/InstantID/Originals').iterdir():
     print(original)
 
     orignal_filename = str(original).split('/')[-1].split('.')[0]
+    extension = str(original).split('/')[-1].split('.')[1]
+    if extension != 'JPG':
+        continue
     face_image = load_image(str(original))
-    face_image = face_image.convert('RGB')
-    face_image = face_image.resize((512, 512))
+    
+    face_image.show()
     
     # prepare face emb
     face_info = app.get(cv2.cvtColor(np.array(face_image), cv2.COLOR_RGB2BGR))
@@ -90,6 +93,7 @@ for original in pathlib.Path('/home/user/InstantID/Originals').iterdir():
                         random_seed=random_int,
                         ).images[0]
             
+            image.show()
 
             image.save(f'{path}/{random_int}.jpeg')
                                                                     
