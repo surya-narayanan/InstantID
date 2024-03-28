@@ -112,6 +112,6 @@ for original in pathlib.Path('/home/user/InstantID/Originals').iterdir():
     except:
         continue                                                                        
 
-
+#original photos that look good: 17, 19, 22, 64, 62, 63, 64
 
     # %%
