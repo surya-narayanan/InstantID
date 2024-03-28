@@ -14,7 +14,7 @@ from pipeline_stable_diffusion_xl_instantid import StableDiffusionXLInstantIDPip
 
 import pathlib
 import random
-num_images_per_prompt = 1
+num_images_per_prompt = 10
 
 # prepare 'antelopev2' under ./models
 app = FaceAnalysis(name='antelopev2', root='./', providers=['CUDAExecutionProvider', 'CPUExecutionProvider'])
@@ -45,14 +45,14 @@ for original in pathlib.Path('/home/user/InstantID/Originals').iterdir():
     orignal_filename = str(original).split('/')[-1].split('.')[0]
     extension = str(original).split('/')[-1].split('.')[1]
     
-    if orignal_filename in ['8', '11', '19', '23', '31', '32', '44', '53', '59', '62', '64', '67', '68', '26', '24', '7']:
+    if orignal_filename not in ['17', '19', '22',  '40', '45', '64', '62', '63', '64']:
         continue
     # if extension != 'JPG':
     #     continue
     try:
         face_image = load_image(str(original))
         
-        face_image.show()
+        # face_image.show()
         
         # prepare face emb
         face_info = app.get(cv2.cvtColor(np.array(face_image), cv2.COLOR_RGB2BGR))
@@ -106,12 +106,12 @@ for original in pathlib.Path('/home/user/InstantID/Originals').iterdir():
                             random_seed=random_int,
                             ).images[0]
                 
-                image.show()
+                # image.show()
 
                 image.save(f'{path}/{random_int}.jpeg')
     except:
         continue                                                                        
 
-#original photos that look good: 17, 19, 22, 64, 62, 63, 64
+
 
     # %%
